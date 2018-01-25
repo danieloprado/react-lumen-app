@@ -1,8 +1,4 @@
-import 'moment/locale/pt-br';
-
 import moment from 'moment';
-
-moment.locale('pt-BR');
 
 class DateFormatter {
 
@@ -13,8 +9,8 @@ class DateFormatter {
       return obj.map(i => this.parseObj(i)) as any;
     }
 
-    if (typeof obj === 'string' && this.isISODate(obj)) {
-      return new Date(obj) as any;
+    if (typeof obj === 'string' && this.isValidDateString(obj)) {
+      return moment(obj).toDate() as any;
     }
 
     if (typeof obj === 'object') {
@@ -52,8 +48,8 @@ class DateFormatter {
         date.format('DD/MMM/YYYY [às] HH:mm');
   }
 
-  private isISODate(value: any): boolean {
-    return /(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})\.(\d+)Z/.test(value);
+  private isValidDateString(value: any): boolean {
+    return /^(\d{4})-(\d{2})-(\d{2})([T\s](\d{2}):(\d{2}):(\d{2})(\.(\d+)Z)?)?$/.test(value);
   }
 }
 
