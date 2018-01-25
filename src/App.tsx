@@ -1,5 +1,5 @@
 import { createMuiTheme, MuiThemeProvider, Reboot } from 'material-ui';
-import { amber, blue } from 'material-ui/colors';
+import { blue, red } from 'material-ui/colors';
 import * as React from 'react';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 
@@ -8,7 +8,7 @@ import HomePage from './pages/home';
 const theme = createMuiTheme({
   palette: {
     primary: blue,
-    secondary: amber
+    secondary: red
   }
 });
 

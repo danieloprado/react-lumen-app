@@ -3,9 +3,9 @@ import MoreVertIcon from 'material-ui-icons/MoreVert';
 import * as React from 'react';
 
 import { ApplyStyles } from '../decorators/applyStyles';
-import { BaseComponent } from './base';
+import { BaseComponent, IStateBase } from './base';
 
-interface IState {
+interface IState extends IStateBase {
   targetElem?: HTMLElement;
 }
 

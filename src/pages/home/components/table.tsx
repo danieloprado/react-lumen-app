@@ -4,12 +4,13 @@ import EditIcon from 'material-ui-icons/Edit';
 import { TableBody, TableCell, TableFooter, TableHead, TablePagination, TableRow } from 'material-ui/Table';
 import * as React from 'react';
 
-import { BaseComponent } from '../../../components/base';
+import { BaseComponent, IStateBase } from '../../../components/base';
 import DropdownMenu from '../../../components/dropdownMenu';
 import { ApplyStyles } from '../../../decorators/applyStyles';
 import { IProfile } from '../../../interfaces/profile';
+import ModalForm from './form';
 
-interface IState {
+interface IState extends IStateBase {
   paginatedProfiles: Array<IProfile & { menuEl?: any }>;
   pageSize: number;
   currentPage: number;
@@ -19,12 +20,16 @@ interface IProps {
   profiles: IProfile[];
 }
 
+interface IRefs {
+  modalForm: ModalForm;
+}
+
 @ApplyStyles({
   textButton: {
     paddingRight: '0 !important',
   }
 })
-export default class HomeTableComponent extends BaseComponent<IState, IProps> {
+export default class HomeTableComponent extends BaseComponent<IState, IProps, IRefs> {
   constructor(props: IProps) {
     super(props);
     this.state = {
@@ -32,6 +37,10 @@ export default class HomeTableComponent extends BaseComponent<IState, IProps> {
       pageSize: 10,
       currentPage: 0
     };
+  }
+
+  onEdit(profile: IProfile) {
+    this.refs.modalForm.show(profile);
   }
 
   componentWillReceiveProps(nextProps: IProps) {
@@ -61,48 +70,52 @@ export default class HomeTableComponent extends BaseComponent<IState, IProps> {
     const { profiles, classes } = this.props;
 
     return (
-      <Table>
-        <TableHead>
-          <TableRow>
-            <TableCell>Nome</TableCell>
-            <TableCell>Email</TableCell>
-            <TableCell></TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {paginatedProfiles.map(profile => {
-            return (
-              <TableRow key={profile.id}>
-                <TableCell>{profile.name}</TableCell>
-                <TableCell>{profile.email}</TableCell>
-                <TableCell className={classes.textButton}>
-                  <DropdownMenu options={[{
-                    icon: <EditIcon />,
-                    text: 'Editar',
-                    handler: () => console.log('clicked')
-                  }, {
-                    icon: <DeleteIcon />,
-                    text: 'Excluir',
-                    handler: () => console.log('clicked')
-                  }]} />
-                </TableCell>
-              </TableRow>
-            );
-          })}
-        </TableBody>
-        <TableFooter>
-          <TableRow>
-            <TablePagination
-              colSpan={3}
-              count={profiles.length}
-              rowsPerPage={pageSize}
-              page={currentPage}
-              onChangePage={this.onChangePage.bind(this)}
-              onChangeRowsPerPage={this.onPageSizeChange.bind(this)}
-            />
-          </TableRow>
-        </TableFooter>
-      </Table>
+      <div>
+        <ModalForm ref='modalForm' />
+
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell>Nome</TableCell>
+              <TableCell>Email</TableCell>
+              <TableCell></TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {paginatedProfiles.map(profile => {
+              return (
+                <TableRow key={profile.id}>
+                  <TableCell>{profile.name}</TableCell>
+                  <TableCell>{profile.email}</TableCell>
+                  <TableCell className={classes.textButton}>
+                    <DropdownMenu options={[{
+                      icon: <EditIcon />,
+                      text: 'Editar',
+                      handler: () => this.onEdit(profile)
+                    }, {
+                      icon: <DeleteIcon />,
+                      text: 'Excluir',
+                      handler: () => console.log('clicked')
+                    }]} />
+                  </TableCell>
+                </TableRow>
+              );
+            })}
+          </TableBody>
+          <TableFooter>
+            <TableRow>
+              <TablePagination
+                colSpan={3}
+                count={profiles.length}
+                rowsPerPage={pageSize}
+                page={currentPage}
+                onChangePage={this.onChangePage.bind(this)}
+                onChangeRowsPerPage={this.onPageSizeChange.bind(this)}
+              />
+            </TableRow>
+          </TableFooter>
+        </Table>
+      </div>
     );
   }
 }

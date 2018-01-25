@@ -2,13 +2,13 @@ import { LinearProgress, Paper } from 'material-ui';
 import { AppBar, Toolbar, Typography } from 'material-ui';
 import * as React from 'react';
 
-import { BaseComponent } from '../../components/base';
+import { BaseComponent, IStateBase } from '../../components/base';
 import { ApplyStyles } from '../../decorators/applyStyles';
 import { IProfile } from '../../interfaces/profile';
 import { profileService } from '../../services';
 import TableProfile from './components/table';
 
-interface IState {
+interface IState extends IStateBase {
   profiles: IProfile[];
   loading: boolean;
 }
