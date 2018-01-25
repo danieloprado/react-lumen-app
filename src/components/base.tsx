@@ -6,7 +6,7 @@ export abstract class BaseComponent<S = any, P = any> extends Component<P, S> {
 
   public state: Readonly<S>;
   public props: Readonly<{ children?: ReactNode }> & Readonly<P> & {
-    classes: { [key: string]: any }
+    classes?: { [key: string]: any }
   };
 
   constructor(props: any) {

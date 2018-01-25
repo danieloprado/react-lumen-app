@@ -1,8 +1,8 @@
 import { IconButton, ListItemIcon, ListItemText, Menu, MenuItem } from 'material-ui';
 import MoreVertIcon from 'material-ui-icons/MoreVert';
-import withStyles from 'material-ui/styles/withStyles';
 import * as React from 'react';
 
+import { ApplyStyles } from '../decorators/applyStyles';
 import { BaseComponent } from './base';
 
 interface IState {
@@ -12,12 +12,17 @@ interface IState {
 interface IProps {
   options: {
     text: string;
-    icon?: React.Component;
+    icon?: any;
     handler: () => void
   }[];
 }
 
-class DropdownMenu extends BaseComponent<IState, IProps> {
+@ApplyStyles({
+  text: {
+    paddingLeft: '0 !important'
+  }
+})
+export default class DropdownMenu extends BaseComponent<IState, IProps> {
   constructor(props: any) {
     super(props);
     this.state = {};
@@ -65,9 +70,3 @@ class DropdownMenu extends BaseComponent<IState, IProps> {
     );
   }
 }
-
-export default withStyles({
-  text: {
-    paddingLeft: '0 !important'
-  }
-})(DropdownMenu);
