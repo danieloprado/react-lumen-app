@@ -9,3 +9,9 @@ export function list(): Observable<IProfile[]> {
     .get<IProfile[]>('/profile')
     .map(profiles => dateFormatter.parseObj(profiles));
 }
+
+export function get(id: number): Observable<IProfile> {
+  return apiService
+    .get<IProfile>(`/profile/${id}`)
+    .map(profile => dateFormatter.parseObj(profile));
+}

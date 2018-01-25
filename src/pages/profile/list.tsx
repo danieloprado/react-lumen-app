@@ -1,9 +1,7 @@
-import { LinearProgress, Paper } from 'material-ui';
-import { AppBar, Toolbar, Typography } from 'material-ui';
+import { AppBar, Card, LinearProgress, Toolbar, Typography } from 'material-ui';
 import * as React from 'react';
 
 import { BaseComponent, IStateBase } from '../../components/base';
-import { ApplyStyles } from '../../decorators/applyStyles';
 import { IProfile } from '../../interfaces/profile';
 import { profileService } from '../../services';
 import TableProfile from './components/table';
@@ -13,12 +11,7 @@ interface IState extends IStateBase {
   loading: boolean;
 }
 
-@ApplyStyles({
-  root: {
-    padding: '1rem'
-  }
-})
-export default class Home extends BaseComponent<IState> {
+export default class ProfileListPage extends BaseComponent<IState> {
 
   constructor(props: any) {
     super(props);
@@ -42,26 +35,25 @@ export default class Home extends BaseComponent<IState> {
 
   render() {
     const { profiles, loading } = this.state;
-    const { classes } = this.props;
 
     return (
       <div>
         <AppBar position='static'>
           <Toolbar>
             <Typography type='title' color='inherit'>
-              React Lumen App
+              Listagem
             </Typography>
           </Toolbar>
         </AppBar>
 
-        <div className={classes.root}>
+        <div className='root'>
           {loading &&
             <LinearProgress color='secondary' />
           }
 
-          <Paper>
+          <Card>
             <TableProfile profiles={profiles} />
-          </Paper>
+          </Card>
         </div>
       </div>
     );

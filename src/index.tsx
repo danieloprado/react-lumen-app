@@ -1,7 +1,4 @@
 import './global.css';
-import './operators/bindComponent';
-import './operators/cache';
-import './operators/logError';
 import 'moment/locale/pt-br';
 
 import moment from 'moment';

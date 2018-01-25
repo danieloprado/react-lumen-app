@@ -1,9 +1,15 @@
+import './operators/bindComponent';
+import './operators/cache';
+import './operators/logError';
+
 import { createMuiTheme, MuiThemeProvider, Reboot } from 'material-ui';
 import { blue, red } from 'material-ui/colors';
 import * as React from 'react';
-import { BrowserRouter as Router, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Redirect, Route, Switch } from 'react-router-dom';
 
-import HomePage from './pages/home';
+import LoaderComponent from './components/loader';
+import ProfileFormPage from './pages/profile/form';
+import ProfileListPage from './pages/profile/list';
 
 const theme = createMuiTheme({
   palette: {
@@ -12,15 +18,38 @@ const theme = createMuiTheme({
   }
 });
 
-class App extends React.Component {
-  public render(): JSX.Element {
+interface IState {
+  loaded: boolean;
+}
+
+class App extends React.Component<any, IState> {
+  constructor(props: any) {
+    super(props);
+    this.state = { loaded: false };
+  }
+
+  componentDidMount() {
+    this.setState({ loaded: true });
+  }
+
+  render() {
+    const { loaded } = this.state;
+
     return (
-      <Router>
-        <MuiThemeProvider theme={theme}>
-          <Reboot />
-          <Route exact path='/' component={HomePage} />
-        </MuiThemeProvider>
-      </Router>
+      <MuiThemeProvider theme={theme}>
+        <Reboot />
+        <LoaderComponent ref='loader' />
+
+        {loaded &&
+          <Router>
+            <Switch>
+              <Route exact path='/' component={ProfileListPage} />
+              <Route path='/profile/:id?' component={ProfileFormPage} />
+              <Route render={() => <Redirect to='/' />} />
+            </Switch>
+          </Router>
+        }
+      </MuiThemeProvider>
     );
   }
 }

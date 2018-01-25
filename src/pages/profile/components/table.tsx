@@ -6,7 +6,8 @@ import * as React from 'react';
 
 import { BaseComponent, IStateBase } from '../../../components/base';
 import DropdownMenu from '../../../components/dropdownMenu';
-import { ApplyStyles } from '../../../decorators/applyStyles';
+import { WithRouter } from '../../../decorators/withRouter';
+import { WithStyles } from '../../../decorators/withStyles';
 import { IProfile } from '../../../interfaces/profile';
 import ModalForm from './form';
 
@@ -24,14 +25,17 @@ interface IRefs {
   modalForm: ModalForm;
 }
 
-@ApplyStyles({
+@WithRouter()
+@WithStyles({
   textButton: {
     paddingRight: '0 !important',
+    textAlign: 'right'
   }
 })
-export default class HomeTableComponent extends BaseComponent<IState, IProps, IRefs> {
+export default class ProfileTableComponent extends BaseComponent<IState, IProps, IRefs> {
   constructor(props: IProps) {
     super(props);
+
     this.state = {
       paginatedProfiles: [],
       pageSize: 10,
@@ -40,7 +44,7 @@ export default class HomeTableComponent extends BaseComponent<IState, IProps, IR
   }
 
   onEdit(profile: IProfile) {
-    this.refs.modalForm.show(profile);
+    this.props.history.push(`/profile/${profile.id}`);
   }
 
   componentWillReceiveProps(nextProps: IProps) {
@@ -71,8 +75,6 @@ export default class HomeTableComponent extends BaseComponent<IState, IProps, IR
 
     return (
       <div>
-        <ModalForm ref='modalForm' />
-
         <Table>
           <TableHead>
             <TableRow>

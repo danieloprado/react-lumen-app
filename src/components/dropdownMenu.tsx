@@ -2,7 +2,7 @@ import { IconButton, ListItemIcon, ListItemText, Menu, MenuItem } from 'material
 import MoreVertIcon from 'material-ui-icons/MoreVert';
 import * as React from 'react';
 
-import { ApplyStyles } from '../decorators/applyStyles';
+import { WithStyles } from '../decorators/withStyles';
 import { BaseComponent, IStateBase } from './base';
 
 interface IState extends IStateBase {
@@ -17,7 +17,7 @@ interface IProps {
   }[];
 }
 
-@ApplyStyles({
+@WithStyles({
   text: {
     paddingLeft: '0 !important'
   }

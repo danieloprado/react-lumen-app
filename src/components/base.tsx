@@ -1,4 +1,5 @@
 import { ChangeEvent, Component, ReactInstance, ReactNode } from 'react';
+import { RouteComponentProps } from 'react-router';
 import { Subscription } from 'rxjs';
 
 import { BaseValidator } from '../validators/base';
@@ -16,7 +17,7 @@ export abstract class BaseComponent<S extends IStateBase = any, P = any, R = any
   public refs: R & { [key: string]: ReactInstance };
   public props: Readonly<{ children?: ReactNode }> & Readonly<P> & {
     classes?: { [key: string]: any }
-  };
+  } & Partial<RouteComponentProps<any>>;
 
   constructor(props: any) {
     super(props);
@@ -25,6 +26,10 @@ export abstract class BaseComponent<S extends IStateBase = any, P = any, R = any
 
   public componentWillUnmount(): void {
     this.subscriptions.forEach(s => s.unsubscribe());
+  }
+
+  public previousPage() {
+    this.props.history.goBack();
   }
 
   public setState<K extends keyof S>(f: (prevState: S, props: P) => Pick<S, K>, callback?: () => any): Promise<void>;
@@ -55,7 +60,6 @@ export abstract class BaseComponent<S extends IStateBase = any, P = any, R = any
       this.setState({ model });
 
       if (!validator) {
-        this.setState({ validation: {}, model });
         return;
       }
 

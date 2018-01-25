@@ -3,7 +3,7 @@ import { Observable, Subscriber, Subscription } from 'rxjs';
 
 let globalLoaderComponent: any;
 
-export function setup(loader: any): void {
+export function setup(loader: { show: Function, hide: Function }): void {
   globalLoaderComponent = loader;
 }
 

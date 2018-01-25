@@ -1,7 +1,16 @@
+.root {
+  padding: 1rem;
+}
+
 .text-center {
   text-align: center;
 }
 
 .padding {
   padding: 1rem;
+}
+
+.MuiDialog-paper-80 {
+  margin: 12px !important;
+  max-height: calc(100% - 22px) !important;
 }
