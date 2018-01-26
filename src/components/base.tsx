@@ -1,11 +1,13 @@
 import { ChangeEvent, Component, ReactInstance, ReactNode } from 'react';
 import { RouteComponentProps } from 'react-router';
 import { Subscription } from 'rxjs';
+import { Observable } from 'rxjs/Observable';
 
 import { BaseValidator } from '../validators/base';
 
 export interface IStateBase<T = any> {
   model?: Partial<T>;
+  formSubmitted?: boolean;
   validation?: {
     [key: string]: string;
   };
@@ -18,6 +20,8 @@ export abstract class BaseComponent<S extends IStateBase = any, P = any, R = any
   public props: Readonly<{ children?: ReactNode }> & Readonly<P> & {
     classes?: { [key: string]: any }
   } & Partial<RouteComponentProps<any>>;
+
+  protected validator: BaseValidator<any>;
 
   constructor(props: any) {
     super(props);
@@ -40,30 +44,30 @@ export abstract class BaseComponent<S extends IStateBase = any, P = any, R = any
     });
   }
 
-  public isFormValid(): boolean {
-    return !Object.keys(this.state.validation || {}).length;
-  }
-
-  public hasError(key: string): boolean {
-    return !!this.getErrorMessage(key);
+  public isFormValid(validator: BaseValidator<any>): Observable<boolean> {
+    return validator
+      .validate(this.state.model)
+      .do(({ errors }) => this.setState({ validation: errors, formSubmitted: true }))
+      .map(r => r.valid);
   }
 
   public getErrorMessage(key: string): string {
     return (this.state.validation || {})[key];
   }
 
-  protected updateModel(handler: (value: any) => void, validator?: BaseValidator<any>): any {
+  protected updateModel(handler: (value: any) => void): any {
     return (event: ChangeEvent<any>) => {
       let { model } = this.state as any;
-      handler(event.target.value);
+      handler(event.target ? event.target.value : event);
 
       this.setState({ model });
 
-      if (!validator) {
+      if (!this.validator) {
         return;
       }
 
-      (validator as BaseValidator<any>).validate(model)
+      this.validator
+        .validate(model)
         .logError()
         .bindComponent(this)
         .subscribe(({ model, errors }) => {

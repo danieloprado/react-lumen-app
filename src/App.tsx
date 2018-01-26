@@ -7,6 +7,7 @@ import { blue, red } from 'material-ui/colors';
 import * as React from 'react';
 import { BrowserRouter as Router, Redirect, Route, Switch } from 'react-router-dom';
 
+import AlertComponent from './components/alert';
 import LoaderComponent from './components/loader';
 import ProfileFormPage from './pages/profile/form';
 import ProfileListPage from './pages/profile/list';
@@ -38,7 +39,8 @@ class App extends React.Component<any, IState> {
     return (
       <MuiThemeProvider theme={theme}>
         <Reboot />
-        <LoaderComponent ref='loader' />
+        <LoaderComponent />
+        <AlertComponent />
 
         {loaded &&
           <Router>

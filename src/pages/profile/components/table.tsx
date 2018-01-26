@@ -9,7 +9,6 @@ import DropdownMenu from '../../../components/dropdownMenu';
 import { WithRouter } from '../../../decorators/withRouter';
 import { WithStyles } from '../../../decorators/withStyles';
 import { IProfile } from '../../../interfaces/profile';
-import ModalForm from './form';
 
 interface IState extends IStateBase {
   paginatedProfiles: Array<IProfile & { menuEl?: any }>;
@@ -19,10 +18,8 @@ interface IState extends IStateBase {
 
 interface IProps {
   profiles: IProfile[];
-}
-
-interface IRefs {
-  modalForm: ModalForm;
+  onEdit: Function;
+  onDelete: Function;
 }
 
 @WithRouter()
@@ -32,7 +29,7 @@ interface IRefs {
     textAlign: 'right'
   }
 })
-export default class ProfileTableComponent extends BaseComponent<IState, IProps, IRefs> {
+export default class ProfileTableComponent extends BaseComponent<IState, IProps> {
   constructor(props: IProps) {
     super(props);
 
@@ -41,10 +38,6 @@ export default class ProfileTableComponent extends BaseComponent<IState, IProps,
       pageSize: 10,
       currentPage: 0
     };
-  }
-
-  onEdit(profile: IProfile) {
-    this.props.history.push(`/profile/${profile.id}`);
   }
 
   componentWillReceiveProps(nextProps: IProps) {
@@ -71,7 +64,7 @@ export default class ProfileTableComponent extends BaseComponent<IState, IProps,
 
   render() {
     const { paginatedProfiles, pageSize, currentPage } = this.state;
-    const { profiles, classes } = this.props;
+    const { profiles, classes, onEdit, onDelete } = this.props;
 
     return (
       <div>
@@ -84,7 +77,7 @@ export default class ProfileTableComponent extends BaseComponent<IState, IProps,
             </TableRow>
           </TableHead>
           <TableBody>
-            {paginatedProfiles.map(profile => {
+            {paginatedProfiles.map((profile, index) => {
               return (
                 <TableRow key={profile.id}>
                   <TableCell>{profile.name}</TableCell>
@@ -93,11 +86,11 @@ export default class ProfileTableComponent extends BaseComponent<IState, IProps,
                     <DropdownMenu options={[{
                       icon: <EditIcon />,
                       text: 'Editar',
-                      handler: () => this.onEdit(profile)
+                      handler: () => onEdit(profile)
                     }, {
                       icon: <DeleteIcon />,
                       text: 'Excluir',
-                      handler: () => console.log('clicked')
+                      handler: () => onDelete(profile, index)
                     }]} />
                   </TableCell>
                 </TableRow>

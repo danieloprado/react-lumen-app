@@ -1,9 +1,13 @@
-import { AppBar, Card, LinearProgress, Toolbar, Typography } from 'material-ui';
+import { AppBar, Card, IconButton, LinearProgress, Toolbar, Typography } from 'material-ui';
+import AddIcon from 'material-ui-icons/PersonAdd';
 import * as React from 'react';
 
 import { BaseComponent, IStateBase } from '../../components/base';
+import { WithRouter } from '../../decorators/withRouter';
+import { WithStyles } from '../../decorators/withStyles';
 import { IProfile } from '../../interfaces/profile';
 import { profileService } from '../../services';
+import { showConfirm } from '../../services/dialog';
 import TableProfile from './components/table';
 
 interface IState extends IStateBase {
@@ -11,6 +15,12 @@ interface IState extends IStateBase {
   loading: boolean;
 }
 
+@WithRouter()
+@WithStyles({
+  flex: {
+    flex: 1
+  }
+})
 export default class ProfileListPage extends BaseComponent<IState> {
 
   constructor(props: any) {
@@ -33,16 +43,42 @@ export default class ProfileListPage extends BaseComponent<IState> {
       });
   }
 
+  onCreate() {
+    this.props.history.push('/profile');
+  }
+
+  onEdit(profile: IProfile) {
+    this.props.history.push(`/profile/${profile.id}`);
+  }
+
+  onDelete(profile: IProfile, index: number) {
+    showConfirm(`Deseja realmente apagar o curriculo  do ${profile.name}?`)
+      .filter(ok => ok)
+      .switchMap(() => profileService.remove(profile.id).logError())
+      .bindComponent(this)
+      .logError()
+      .subscribe(() => {
+        const { profiles } = this.state;
+
+        profiles.splice(index, 1);
+        this.setState({ profiles });
+      });
+  }
+
   render() {
     const { profiles, loading } = this.state;
+    const { classes } = this.props;
 
     return (
       <div>
         <AppBar position='static'>
           <Toolbar>
-            <Typography type='title' color='inherit'>
+            <Typography type='title' color='inherit' className={classes.flex}>
               Listagem
             </Typography>
+            <IconButton color='inherit' onClick={this.onCreate.bind(this)}>
+              <AddIcon />
+            </IconButton>
           </Toolbar>
         </AppBar>
 
@@ -52,7 +88,11 @@ export default class ProfileListPage extends BaseComponent<IState> {
           }
 
           <Card>
-            <TableProfile profiles={profiles} />
+            <TableProfile
+              profiles={profiles}
+              onEdit={this.onEdit.bind(this)}
+              onDelete={this.onDelete.bind(this)}
+            />
           </Card>
         </div>
       </div>

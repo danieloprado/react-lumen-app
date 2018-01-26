@@ -15,3 +15,13 @@ export function get(id: number): Observable<IProfile> {
     .get<IProfile>(`/profile/${id}`)
     .map(profile => dateFormatter.parseObj(profile));
 }
+
+export function save(model: IProfile): Observable<IProfile> {
+  return apiService
+    .post<IProfile>('/profile', model)
+    .map(profile => dateFormatter.parseObj(profile));
+}
+
+export function remove(id: number): Observable<void> {
+  return apiService.del(`/profile/${id}`);
+}

@@ -33,7 +33,7 @@ class DateFormatter {
     return date.toDate();
   }
 
-  public format(date: Date, format: string): string {
+  public format(date: Date, format: string = 'DD/MM/YY'): string {
     return moment(date).format(format).replace('-feira', '');
   }
 
